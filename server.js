@@ -14,7 +14,15 @@ app.use((req, res, next) => {
   next();
 });
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://newfrontend-brown.vercel.app/login",
+      "http://localhost:5173",
+    ],
+    credentials: true,
+  })
+);
 app.get("/", (req, res) => {
   res.status(200).json({ message: "backend is running " });
 });
