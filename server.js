@@ -16,10 +16,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      "https://newfrontend-brown.vercel.app/login",
-      "http://localhost:5173",
-    ],
+    origin: ["https://newfrontend-brown.vercel.app", "http://localhost:5173"],
     credentials: true,
   })
 );
