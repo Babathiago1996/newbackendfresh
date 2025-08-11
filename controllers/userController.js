@@ -2,7 +2,10 @@ const User = require("../models/userModelSchema");
 const generateOTP = require("../utils/otp");
 const sendEmail = require("../logic/sendEmail");
 const bcrypt = require("bcrypt");
-const { generateForgotPasswordEmail, generateOtpEmail} = require("../email/emailTemplate");
+const {
+  generateForgotPasswordEmail,
+  generateOtpEmail,
+} = require("../email/emailTemplate");
 const jwt = require("jsonwebtoken");
 
 const generateToken = (_id) => {
@@ -17,11 +20,11 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(400).json({ message: "Incorrect Email" });
+      return res.status(400).json({ message: "Invalid Email" });
     }
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
-      return res.status(400).json({ error: "incorrect password" });
+      return res.status(400).json({ error: "Invalid password" });
     }
     if (!user.isVerified) {
       return res
@@ -62,13 +65,11 @@ const verifyOTP = async (req, res) => {
       await user.save();
       const token = generateToken(user._id);
 
-      return res
-        .status(200)
-        .json({
-          message: "Email verified successfully",
-          token,
-          email: user.email,
-        });
+      return res.status(200).json({
+        message: "Email verified successfully",
+        token,
+        email: user.email,
+      });
     } else {
       return res.status(400).json({ message: "Invalid or Expired OTP" });
     }
@@ -112,11 +113,10 @@ const resetPassword = async (req, res) => {
     }
     const isSame = await bcrypt.compare(newPassword, user.password);
     if (isSame) {
-      return res
-        .status(400)
-        .json({
-          message: "you cannot use the same password as before. please choose a new one. ",
-        });
+      return res.status(400).json({
+        message:
+          "you cannot use the same password as before. please choose a new one. ",
+      });
     }
     const salt = await bcrypt.genSalt(10);
 
@@ -125,13 +125,11 @@ const resetPassword = async (req, res) => {
     user.otpExpires = undefined;
     await user.save();
     const token = generateToken(user._id);
-    res
-      .status(200)
-      .json({
-        message: "password reset successfully",
-        token,
-        email: user.email,
-      });
+    res.status(200).json({
+      message: "password reset successfully",
+      token,
+      email: user.email,
+    });
   } catch (error) {
     console.error("reset password error", error.message);
     res.status(500).json({ message: "Server error" });
@@ -148,7 +146,7 @@ const resendOTP = async (req, res) => {
       return res.status(404).json({ message: "Email not found" });
     }
 
-    if (purpose ==="verify" && user.isVerified) {
+    if (purpose === "verify" && user.isVerified) {
       return res.status(400).json({ message: "Email is already verified" });
     }
 
