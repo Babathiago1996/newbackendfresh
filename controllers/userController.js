@@ -106,10 +106,14 @@ const resetPassword = async (req, res) => {
     const { email, newPassword, otp } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "You input the wrong Email" });
+      return res.status(404).json({ message: "Invalid email address." });
     }
-    if (user.otp !== otp || user.otpExpires < Date.now()) {
-      return res.status(400).json({ error: "Invalid or Expired OTP" });
+    if (!otp || user.otp !== otp) {
+      return res.status(400).json({ error: "Invalid OTP." });
+    }
+
+    if (user.otpExpires < Date.now()) {
+      return res.status(400).json({ error: " Expired OTP" });
     }
     const isSame = await bcrypt.compare(newPassword, user.password);
     if (isSame) {
