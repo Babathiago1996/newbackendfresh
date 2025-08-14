@@ -1,3 +1,4 @@
+require("dotenv").config();
 const User = require("../models/userModelSchema");
 const generateOTP = require("../utils/otp");
 const sendEmail = require("../logic/sendEmail");
@@ -9,7 +10,7 @@ const {
 const jwt = require("jsonwebtoken");
 
 const generateToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "30m" });
 };
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
