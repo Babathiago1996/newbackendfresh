@@ -10,7 +10,7 @@ const {
 const jwt = require("jsonwebtoken");
 
 const generateToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "30m" });
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3m" });
 };
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
